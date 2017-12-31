@@ -173,7 +173,7 @@ TEST(util, load_FDSet) {
     std::stringstream in{
         "XY Z\n" 
         "Y Z\n"
-        "Z K"
+        "Z K\n"
     };
     FDSet fds;
     in >> fds;

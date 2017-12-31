@@ -1,4 +1,4 @@
-#include "db_algorithm.hpp"
+#include "fd_algorithm.hpp"
 #include <algorithm>
 
 FieldSet closure_of(const FieldSet& set, const FDSet& fds) {
@@ -37,12 +37,13 @@ bool equivalent_after_remove(const FDSet& fds, const FD& fd) {
 }
 
 bool equivalent_after_replace(const FDSet& fds, const FD& oldfd, const FD& newfd) {
-    FDSet copy = fds;
-    copy.erase(oldfd);
-    copy.insert(newfd);
+    FDSet newfds = fds;
+    newfds.erase(oldfd);
+    newfds.insert(newfd);
 
-    auto Y = closure_of(newfd.first, copy);
-    if (is_subset(newfd.second, Y)) 
+    auto Y1 = closure_of(newfd.first, fds);
+    auto Y2 = closure_of(oldfd.first, newfds); 
+    if (is_subset(newfd.second, Y1) && is_subset(oldfd.second, Y2))
         return true;
     else
         return false;
@@ -72,6 +73,9 @@ FDSet minimal_cover(const FDSet& fds) {
         auto modified_set = fd.first;
         for (auto& field: fd.first) {
             modified_set.erase(field);
+            if (modified_set.size() == 0)
+                break;
+
             if (equivalent_after_replace(result, fd, make_FD(modified_set, fd.second))) {
                 result.erase(fd);
                 result.insert(make_FD(modified_set, fd.second));

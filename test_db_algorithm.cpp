@@ -1,15 +1,19 @@
-#include "db_algorithm.hpp"
+#include "fd_algorithm.hpp"
 #include "util.hpp"
 #include <gmock/gmock.h>
 
-TEST(db_algorithm, closure_of_field_set) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
-    Field D = "D";
-    Field E = "E";
-    Field F = "F";
+const Field A = "A";
+const Field B = "B";
+const Field C = "C";
+const Field D = "D";
+const Field E = "E";
+const Field F = "F";
+const Field G = "G";
+const Field H = "H";
+const Field I = "I";
+const Field J = "J";
 
+TEST(db_algorithm, closure_of_field_set) {
     auto R = make_set(A, B, C, D, E, F);
     auto fds = make_set(
             make_FD(make_set(A, B), C),
@@ -25,12 +29,6 @@ TEST(db_algorithm, closure_of_field_set) {
 }
 
 TEST(db_algorithm, candidate_key) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
-    Field D = "D";
-    Field E = "E";
-
     auto R = make_set(A, B, C, D, E);
     auto fds = make_set(
             make_FD(make_set(A, B), C),
@@ -45,12 +43,6 @@ TEST(db_algorithm, candidate_key) {
 }
 
 TEST(db_algorithm, equivalent_after_remove) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
-    Field D = "D";
-    Field E = "E";
-
     auto fds = make_set(
             make_FD(make_set(A, B), C),
             make_FD(make_set(A, C), B),
@@ -67,12 +59,6 @@ TEST(db_algorithm, equivalent_after_remove) {
 }
 
 TEST(db_algorithm, non_redundant) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
-    Field D = "D";
-    Field E = "E";
-
     auto fds = make_set(
             make_FD(make_set(A, B), C),
             make_FD(make_set(A, C), B),
@@ -89,29 +75,40 @@ TEST(db_algorithm, non_redundant) {
 }
 
 TEST(db_algorithm, equivalent_after_replace) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
-    Field D = "D";
-    Field E = "E";
-
     auto fds = make_set(
             make_FD(make_set(A, B), C),
-            make_FD(make_set(A, B, C), B),
+            make_FD(A, C),
+            make_FD(make_set(A, C), B),
             make_FD(make_set(B, C), make_set(D, E))
     );
-    auto oldfd = make_FD(make_set(A, B, C), B);
-    auto newfd = make_FD(make_set(A, C), B);
+    auto oldfd = make_FD(make_set(A, C), B);
+    auto newfd = make_FD(make_set(A), B);
 
     bool result = equivalent_after_replace(fds, oldfd, newfd);
     ASSERT_TRUE(result);
 }
 
-TEST(db_algorithm, minimal_cover) {
-    Field A = "A";
-    Field B = "B";
-    Field C = "C";
+TEST(db_algorithm, equivalent_after_replace2) {
+    std::stringstream input{
+        "A B\n"
+        "ABCD E\n"
+        "EF G\n"
+        "ACDF E\n"
+        "ACDF G\n"
+    };
 
+    FDSet fds;
+    input >> fds;
+
+    FD replaced = make_FD(make_set(A, B, C, D), E);
+    auto replacing1 = make_FD(make_set(B, C, D), E);
+    auto replacing2 = make_FD(make_set(A, C, D), E);
+
+    ASSERT_FALSE(equivalent_after_replace(fds, replaced, replacing1));
+    ASSERT_TRUE(equivalent_after_replace(fds, replaced, replacing2));
+}
+
+TEST(db_algorithm, minimal_cover) {
     auto fds = make_set(
             make_FD(A, make_set(B, C)),
             make_FD(B, C), 
@@ -125,4 +122,71 @@ TEST(db_algorithm, minimal_cover) {
             make_FD(B, C)
     );
     ASSERT_EQ(minimal, compared_set);
+}
+
+TEST(db_algorithm, minimal_cover2) {
+    std::stringstream input{
+        "A B\n"
+        "ABCD E\n"
+        "EF G\n"
+        "ACDF EG\n"
+    };
+
+    std::stringstream output {
+        "A B\n"
+        "ACD E\n"
+        "EF G\n"
+    };
+
+    FDSet fds;
+    input >> fds;
+
+    FDSet expected;
+    output >> expected;
+    auto result = minimal_cover(fds);
+    ASSERT_EQ(result, expected);
+}
+
+TEST(db_algorithm, problem_section_4) {
+    std::stringstream input{
+        "A BCD\n"
+        "CD B\n"
+        "EF GH\n"
+        "E GIJ\n"
+        "I J\n"
+    };
+
+    FDSet fds;
+    input >> fds;
+
+    auto U = field_set_from(fds);
+    auto key = candidate_key(U, fds);
+    ASSERT_EQ(key, make_set(A, E, F));
+
+    auto non_redundant_cover = non_redundant(fds);
+    std::stringstream non_redundant_cover_input {
+        "A BCD\n"
+        "CD B\n"
+        "EF GH\n"
+        "E GIJ\n"
+        "I J\n"
+    };
+    FDSet expected_non_redundant;
+    non_redundant_cover_input >> expected_non_redundant;
+    ASSERT_EQ(non_redundant_cover, expected_non_redundant);
+
+    auto minimal = minimal_cover(fds);
+    std::stringstream minimal_input{
+        "A C\n"
+        "A D\n"
+        "CD B\n"
+        "E G\n"
+        "EF H\n"
+        "E I\n"
+        "I J\n"
+    };
+    FDSet expected_minimal;
+    minimal_input >> expected_minimal;
+
+    ASSERT_EQ(minimal, expected_minimal);
 }

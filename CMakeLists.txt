@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_library(database
     util.cpp
-    db_algorithm.cpp
+    fd_algorithm.cpp
+    test_lossless_decomposition.cpp
 )
 
 add_executable(main 
@@ -21,6 +22,7 @@ enable_testing()
 
 add_executable(test_main
     test_util.cpp
+    test_lossless_decomposition.cpp
     test_db_algorithm.cpp
 )
 
