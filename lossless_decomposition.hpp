@@ -97,13 +97,14 @@ bool is_lossless_decomposition(const FieldSet& U, const FDSet& F, Sets&& ... rel
     init_table(table, header, std::forward<Sets>(relations) ...);
 
     auto pred = [&table, &header] (const FD& fd) -> bool {
+        bool changed = false;
         for (size_t i = 0; i < table.size() - 1; i++)
             for (size_t j = i + 1; j < table.size(); j++) {
                 if (row_equals(header, table[i], table[j], fd.first)) {
-                    row_homogenize(header, table[i], table[j], fd.second);
+                    changed = row_homogenize(header, table[i], table[j], fd.second);
                 }
             }
-        return false;
+        return changed;
     };
 
     while (std::any_of(F.begin(), F.end(), pred));
