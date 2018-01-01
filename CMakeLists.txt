@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 14)
 add_library(database
     util.cpp
     fd_algorithm.cpp
-    test_lossless_decomposition.cpp
+    lossless_decomposition.cpp
+    normal_form.cpp
 )
 
 add_executable(main 
@@ -23,7 +24,9 @@ enable_testing()
 add_executable(test_main
     test_util.cpp
     test_lossless_decomposition.cpp
-    test_db_algorithm.cpp
+    test_fd_algorithm.cpp
+    test_normal_form.cpp
+    test_problem.cpp
 )
 
 target_link_libraries(test_main

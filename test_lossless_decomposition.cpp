@@ -64,7 +64,9 @@ TEST(lossless_decomposition, init_table) {
     auto R2 = make_set(A, C, D);
     auto R3 = make_set(B, E);
 
-    init_table(table, header, R1, R2, R3);
+    std::vector<FieldSet> relations{R1, R2, R3};
+
+    init_table(table, header, relations);
 
     Table expected = {
         {{true, 0}, {true, 0}, {true, 0}, {false, 0}, {false, 0}},
