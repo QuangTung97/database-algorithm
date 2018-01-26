@@ -3,6 +3,8 @@ project(database)
 
 set(CMAKE_CXX_STANDARD 14)
 
+include_directories(include)
+
 add_library(database
     util.cpp
     fd_algorithm.cpp
@@ -28,6 +30,8 @@ add_executable(test_main
     test_normal_form.cpp
     test_problem.cpp
 )
+
+link_libraries(lib/test)
 
 target_link_libraries(test_main
     database
