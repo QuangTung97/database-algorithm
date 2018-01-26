@@ -3,6 +3,6 @@ sudo: false
 language: cpp
 
 script:
-    cd build
-    cmake .
-    make -j2
+    - cd build
+    - cmake ..
+    - make -j2
