@@ -27,9 +27,11 @@ script:
     - ar -rv libgmock_main.a gtest-all.o gmock-all.o gmock_main.o
 
     - cd $WORKING_DIR
+    - mkdir include
+    - mkdir -p lib/test
     - cp -r googletest/googlemock/include/gmock include/ 
     - cp -r googletest/googletest/include/gtest include/
-    - cp googletest/libgmock_main.a lib/test/libgmock_main.a
+    - cp googletest/libgmock_main.a lib/test
 
     - mkdir build
     - cd build
