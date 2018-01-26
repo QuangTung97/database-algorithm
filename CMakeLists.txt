@@ -31,7 +31,7 @@ add_executable(test_main
     test_problem.cpp
 )
 
-link_libraries(lib/test)
+link_directories(lib/test)
 
 target_link_libraries(test_main
     database
