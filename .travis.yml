@@ -29,7 +29,7 @@ script:
     - cd $WORKING_DIR
     - cp -r googletest/googlemock/include/gmock include/ 
     - cp -r googletest/googletest/include/gtest include/
-    - cp googletest/libgmock_main.a lib/test
+    - cp googletest/libgmock_main.a lib/test/libgmock_main.a
 
     - mkdir build
     - cd build
