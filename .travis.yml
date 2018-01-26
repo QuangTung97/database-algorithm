@@ -12,6 +12,7 @@ addons:
 script:
     - CXX=/usr/bin/g++-5
     - CC=/usr/bin/gcc-5
+    - mkdir build
     - cd build
     - cmake ..
     - make -j2
