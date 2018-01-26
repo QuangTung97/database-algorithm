@@ -8,6 +8,7 @@ addons:
             - ubuntu-toolchain-r-test
         packages:
             - gcc-5
+            - g++-5
 
 script:
     - CXX=/usr/bin/g++-5
