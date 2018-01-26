@@ -22,7 +22,6 @@ target_link_libraries(main
 
 enable_testing()
 
-
 add_executable(test_main
     test_util.cpp
     test_lossless_decomposition.cpp
@@ -31,11 +30,11 @@ add_executable(test_main
     test_problem.cpp
 )
 
-link_directories(lib/test)
+find_library(GMOCK_MAIN gmock_main HINTS lib/test)
 
 target_link_libraries(test_main
     database
-    gmock_main
+    ${GMOCK_MAIN}
     pthread
 )
 
