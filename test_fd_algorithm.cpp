@@ -146,3 +146,18 @@ TEST(db_algorithm, minimal_cover2) {
     auto result = minimal_cover(fds);
     ASSERT_EQ(result, expected);
 }
+
+TEST(db_algorithm, minimal_cover3) {
+    auto U = make_set(A, B, C);
+    auto fds = make_set(
+            make_FD(B, A),
+            make_FD(make_set(A, B), C)
+    );
+
+    auto result = minimal_cover(fds);
+    auto compared = make_set(
+            make_FD(B, A),
+            make_FD(B, C)
+    );
+    ASSERT_EQ(result, compared);
+}
