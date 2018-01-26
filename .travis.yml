@@ -14,8 +14,8 @@ script:
     - CXX=/usr/bin/g++-5
     - CC=/usr/bin/gcc-5
     - ./build_google_mock.sh
-
     - mkdir build
     - cd build
     - cmake ..
     - make -j4
+    - ctest
