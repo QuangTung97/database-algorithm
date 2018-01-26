@@ -7,7 +7,7 @@ addons:
         sources:
             - ubuntu-toolchain-r-test
         packages:
-            - g++-5
+            - gcc-5
 
 script:
     - CXX=/usr/bin/g++-5
