@@ -2,9 +2,6 @@ dist: trusty
 sudo: false
 language: cpp
 
-install:
-    - sudo apt-get update
-
 addons:
     apt:
         sources:
