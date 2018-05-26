@@ -161,3 +161,37 @@ TEST(db_algorithm, minimal_cover3) {
     );
     ASSERT_EQ(result, compared);
 }
+
+TEST(db_algorithm, minimal_cover4) {
+    std::stringstream input{
+        "A BC\n"
+        "CD GHI\n"
+        "C EF\n"
+        "E F\n"
+        "I G\n"
+    };
+
+    FieldSet U = {A, B, C, D, E, F, G, H, I};
+
+    std::stringstream output {
+        "A B\n"
+        "A C\n"
+        "C E\n"
+        "E F\n"
+        "CD H\n"
+        "CD I\n"
+        "I G\n"
+    };
+
+    FDSet fds;
+    input >> fds;
+
+    FDSet expected;
+    output >> expected;
+    auto result = minimal_cover(fds);
+    ASSERT_EQ(result, expected);
+
+    auto key = candidate_key(U, fds);
+    auto compared_key = make_set(A, D);
+    ASSERT_EQ(key, compared_key);
+}
